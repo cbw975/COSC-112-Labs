@@ -1,0 +1,74 @@
+public class MyGenericDS<E> implements GenericOrderedCollection<E>{
+    private node<E> first;
+    private int length;
+    
+    public MyGenericDS(){ //constructor
+        this.first=null; this.length=0; }
+    public node<E> getLast(){
+        node<E> p = this.first;
+        while(p.next != null){
+            p=p.next; } //get to last value
+        return p; }
+    
+    public void append(E toAppend){ //takes value and inserts it at end of collection
+        if(this.length==0){ 
+            this.first = new node<E>(toAppend); 
+            this.length++;
+        }else{
+            this.getLast().next = new node<E>(toAppend);
+		    this.length++; } } //each time add entry, increment length counter
+            
+    public void remove(int index){ //removes the index-th element from the collection (0 to length-1)
+        if(this.length==0){ return;
+        }else if(this.length==1){
+            this.first = this.first.next;
+        }else{
+            node<E> temp = this.first;
+            for(int i=1; i<index; i++) temp = temp.next; //get to the node before it
+            temp.next = temp.next.next; //remove it
+            //shift/adjust all the following nodes
+            while(temp.next.next.next != null) temp.next.next = temp.next.next.next;
+            length--;
+        } }
+            
+    public E peek(){ //returns value at end of collection. if empty, return null
+        if(this.length==0){ return null; //if empty, return null
+        }else{ return this.getLast().value; } } //return the entry's value
+
+    public E pop(){ //returns value at end of collection, and removes it. If empty, return 0 and leave unchanged
+        if(this.length <=0){ return null;//If empty, return 0 and leave unchanged
+        }else if(this.length==1){ 
+            E old = this.first.value;
+            this.first = this.first.next;
+            return old;
+        }else{
+            if(this.length == 2){ E old = this.first.next.value; this.first.next = this.first.next.next; return old; }
+            E old = this.getLast().value; //store old value temporarily
+            node<E> temp = this.first;
+            while(temp.next.next != null) temp.next=temp.next.next; //get to last node
+            // if(temp.next.value == this.getLast().value
+            System.out.println("Testing: "+temp.next.value);
+            temp.next=temp.next.next; //the current last node/value is removed, bc assigned null
+            if(temp.next.value == null) System.out.println("YES");
+            this.length--; //decremeent the length after removing a value
+            return old; } }
+        
+    public int length(){ return this.length; }//returns the number of elements in collection
+
+    public String toString(){ // returns String, each int in collection (in the order added) separated by spaces
+        String result="";
+        if(this.length == 0) return ""; //if empty collection, the return nothing
+        for(node i=this.first; i != null; i=i.next){ result += i.value+" "; }
+        return result; }
+    
+}
+
+class node<V>{
+    public V value;
+    public node<V> next;
+
+    public node(){ next=null; value=null; }
+    public node(V v){ //constructor
+        next=null; //node after this one - this line occurs by default, so don't need it
+        value=v; } //the value for this node 
+}
